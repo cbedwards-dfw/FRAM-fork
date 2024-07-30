@@ -115,10 +115,10 @@ Public Class FVS_RunModel
         '- Outer flank to original RunModelButtonClick code...
 
       FinalUpdatePass = False 'This should always be false unless set to true during S:L Ratio Update
-      Dim iters As Integer = 1
+        Dim iters As Integer = 1 'maximum number of iterations to run. Gets updated below if needed.
         Dim c As Integer = 1 'Allows RunModelButton_Click to execute as normal (for coho or non-update Chinook runs)
 
-      
+
         If ChinookSizeLimitCheck.Checked = True Or SpeciesName = "COHO" Then
             SizeLimitFix = False
         Else
@@ -405,6 +405,7 @@ Public Class FVS_RunModel
 
         'provide a warning when a sublegal nonretention input does not result in mortality (due to small size limit in net)
 
+        'handle the model stock proportions, which is only a thing for chinook
         If SpeciesName = "CHINOOK" Then
             ReDim FTNonRetention(NumFish, NumSteps)
             For Fish = 1 To NumFish
@@ -421,6 +422,7 @@ Public Class FVS_RunModel
                     If Fish = 2 And TStep = 3 Then
                         Jim = 1
                     End If
+                    ' handle some warning messages for edge cases.
                     If NonRetentionFlag(Fish, TStep) = 3 Then
                         If Fish >= 36 And InStr(FisheryTitle(Fish), "Sport") > 0 Then
                             If FTNonRetention(Fish, TStep) - (NonRetentionInput(Fish, TStep, 1) * ShakerMortRate(Fish, TStep) / 2 + NonRetentionInput(Fish, TStep, 2) * ShakerMortRate(Fish, TStep)) > 1 Then

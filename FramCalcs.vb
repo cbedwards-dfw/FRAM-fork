@@ -651,7 +651,7 @@ NextTammStep:
       Next
       xlWorkBook = xlApp.Workbooks.Open(TAMMSpreadSheet)
 SkipWBOpen:
-      xlApp.Application.DisplayAlerts = False
+        xlApp.Application.DisplayAlerts = False
       xlApp.Visible = True
       xlApp.WindowState = Excel.XlWindowState.xlMinimized
 
@@ -1065,8 +1065,8 @@ SkipTami2:
                                     '   PrnLine &= String.Format("{0,11}", StockName(Stk).ToString)
                                     '   sw.WriteLine(PrnLine)
                                     'End If
-                                    Encounters(Stk, Age, Fish, TStep) += LandedCatch(Stk, Age, Fish, TStep)
-                                    TotalEncounters(Fish, TStep) = TotalEncounters(Fish, TStep) + LandedCatch(Stk, Age, Fish, TStep)
+                                    Encounters(Stk, Age, Fish, TStep) = LandedCatch(Stk, Age, Fish, TStep) ' CBE edit: was +=, but this shouldn't be summing, right?
+                                    TotalEncounters(Fish, TStep) = TotalEncounters(Fish, TStep) + Encounters(Stk, Age, Fish, TStep)
                                     ''#################### Size Limit & External Shaker Code ###########################  -- Pete Dec 2012.
                                     'NSEncountersTotal(Fish, TStep) += LandedCatch(Stk, Age, Fish, TStep)
                                     ''#################### Size Limit & External Shaker Code ###########################  -- Pete Dec 2012.
@@ -1103,31 +1103,32 @@ SkipTami2:
                             ''****************************************************************************************
 
                             '- MSF Fishery Scaler
+                            'CBE: adding tweaks here. Easier to think about encounters -> landed catch, not vice versa. Should NOT change results,
+                            '  just using the more logical var names
                             If FisheryFlag(Fish, TStep) = 7 Or FisheryFlag(Fish, TStep) = 17 Or FisheryFlag(Fish, TStep) = 27 Then
-                                MSFLandedCatch(Stk, Age, Fish, TStep) = _
-                                   Cohort(Stk, Age, TerminalType, TStep) * _
-                                   BaseExploitationRate(Stk, Age, Fish, TStep) * _
-                                   MSFFisheryScaler(Fish, TStep) * _
-                                   StockFishRateScalers(Stk, Fish, TStep) * _
+                                MSFEncounters(Stk, Age, Fish, TStep) =
+                                   Cohort(Stk, Age, TerminalType, TStep) *
+                                   BaseExploitationRate(Stk, Age, Fish, TStep) *
+                                   MSFFisheryScaler(Fish, TStep) *
+                                   StockFishRateScalers(Stk, Fish, TStep) *
                                    LegalProportion
-                                MSFEncounters(Stk, Age, Fish, TStep) = MSFLandedCatch(Stk, Age, Fish, TStep)
 
                                 ''#################### Size Limit & External Shaker Code ###########################  -- Pete Dec 2012.
                                 'MSFEncountersTotal(Fish, TStep) += MSFLandedCatch(Stk, Age, Fish, TStep)
                                 ''#################### Size Limit & External Shaker Code ###########################  -- Pete Dec 2012.
 
-                                TotalEncounters(Fish, TStep) += MSFLandedCatch(Stk, Age, Fish, TStep)
+                                TotalEncounters(Fish, TStep) += MSFEncounters(Stk, Age, Fish, TStep)
                                 '--- Use Selective Incidental Rate on ALL fish encountered
-                                MSFDropOff(Stk, Age, Fish, TStep) = MarkSelectiveIncRate(Fish, TStep) * MSFLandedCatch(Stk, Age, Fish, TStep)
+                                MSFDropOff(Stk, Age, Fish, TStep) = MarkSelectiveIncRate(Fish, TStep) * (Stk, Age, Fish, TStep)
                                 TotalDropOff(Fish, TStep) = TotalDropOff(Fish, TStep) + MSFDropOff(Stk, Age, Fish, TStep)
                                 '- All Stocks in Marked/UnMarked pairs
                                 If (Stk Mod 2) = 0 Then '--- Marked Fish in Selective
-                                    MSFNonRetention(Stk, Age, Fish, TStep) = MSFLandedCatch(Stk, Age, Fish, TStep) * MarkSelectiveMarkMisID(Fish, TStep) * MarkSelectiveMortRate(Fish, TStep)
-                                    MSFLandedCatch(Stk, Age, Fish, TStep) = MSFLandedCatch(Stk, Age, Fish, TStep) * (1.0 - MarkSelectiveMarkMisID(Fish, TStep))
+                                    MSFNonRetention(Stk, Age, Fish, TStep) = MSFEncounters(Stk, Age, Fish, TStep) * MarkSelectiveMarkMisID(Fish, TStep) * MarkSelectiveMortRate(Fish, TStep)
+                                    MSFLandedCatch(Stk, Age, Fish, TStep) = MSFEncounters(Stk, Age, Fish, TStep) * (1.0 - MarkSelectiveMarkMisID(Fish, TStep))
                                     TotalNonRetention(Fish, TStep) += MSFNonRetention(Stk, Age, Fish, TStep)
                                 Else           '--- UnMarked (Wild) in Selective
-                                    MSFNonRetention(Stk, Age, Fish, TStep) = MSFLandedCatch(Stk, Age, Fish, TStep) * (1.0 - MarkSelectiveUnMarkMisID(Fish, TStep)) * MarkSelectiveMortRate(Fish, TStep)
-                                    MSFLandedCatch(Stk, Age, Fish, TStep) = MSFLandedCatch(Stk, Age, Fish, TStep) * MarkSelectiveUnMarkMisID(Fish, TStep)
+                                    MSFNonRetention(Stk, Age, Fish, TStep) = MSFEncounters(Stk, Age, Fish, TStep) * (1.0 - MarkSelectiveUnMarkMisID(Fish, TStep)) * MarkSelectiveMortRate(Fish, TStep)
+                                    MSFLandedCatch(Stk, Age, Fish, TStep) = MSFEncounters(Stk, Age, Fish, TStep) * MarkSelectiveUnMarkMisID(Fish, TStep)
                                     TotalNonRetention(Fish, TStep) += MSFNonRetention(Stk, Age, Fish, TStep)
                                 End If
                             End If
@@ -1159,12 +1160,12 @@ SkipTami2:
                                     Jim = 1
                                 End If
 
-                                
 
 
 
 
-                                LandedCatch(Stk, Age, Fish, TStep) = StockFishRateScalers(Stk, Fish, TStep) * BaseExploitationRate(Stk, Age, Fish, TStep) * Cohort(Stk, Age, TerminalType, TStep) * LegalProportion
+
+                                LandedCatch(Stk, Age, Fish, TStep) = Cohort(Stk, Age, TerminalType, TStep) * BaseExploitationRate(Stk, Age, Fish, TStep) * StockFishRateScalers(Stk, Fish, TStep) * LegalProportion
                                 'Encounters(Stk, Age, Fish, TStep) += Encounters(Stk, Age, Fish, TStep) + LandedCatch(Stk, Age, Fish, TStep)
                                 'TotalEncounters(Fish, TStep) = TotalEncounters(Fish, TStep) + LandedCatch(Stk, Age, Fish, TStep)
                                 NSFQuotaTotal(Fish, TStep) += LandedCatch(Stk, Age, Fish, TStep)
@@ -1198,21 +1199,24 @@ SkipTami2:
                             '- MSF Quota Fishery
                             If FisheryFlag(Fish, TStep) = 8 Or FisheryFlag(Fish, TStep) = 18 Or FisheryFlag(Fish, TStep) = 28 Then
                                 '- First Pass for Quota Fisheries - Landed Catch as if FisheryScaler = 1
-                                MSFLandedCatch(Stk, Age, Fish, TStep) = StockFishRateScalers(Stk, Fish, TStep) * BaseExploitationRate(Stk, Age, Fish, TStep) * Cohort(Stk, Age, TerminalType, TStep) * LegalProportion
-                                MSFEncounters(Stk, Age, Fish, TStep) += MSFLandedCatch(Stk, Age, Fish, TStep)
+                                MSFEncounters(Stk, Age, Fish, TStep) =
+                                    Cohort(Stk, Age, TerminalType, TStep) *
+                                    BaseExploitationRate(Stk, Age, Fish, TStep) *
+                                    StockFishRateScalers(Stk, Fish, TStep) *
+                                    LegalProportion
                                 'TotalEncounters(Fish, TStep) += MSFLandedCatch(Stk, Age, Fish, TStep)
                                 '--- Use Selective Incidental Rate on ALL fish encountered
-                                MSFDropOff(Stk, Age, Fish, TStep) = MarkSelectiveIncRate(Fish, TStep) * MSFLandedCatch(Stk, Age, Fish, TStep)
+                                MSFDropOff(Stk, Age, Fish, TStep) = MarkSelectiveIncRate(Fish, TStep) * MSFEncounters(Stk, Age, Fish, TStep)
                                 'TotalDropOff(Fish, TStep) = TotalDropOff(Fish, TStep) + MSFDropOff(Stk, Age, Fish, TStep)
                                 If (Stk Mod 2) = 0 Then
                                     '- Marked Fish in Selective Quota
-                                    MSFNonRetention(Stk, Age, Fish, TStep) = MSFLandedCatch(Stk, Age, Fish, TStep) * MarkSelectiveMarkMisID(Fish, TStep) * MarkSelectiveMortRate(Fish, TStep)
-                                    MSFLandedCatch(Stk, Age, Fish, TStep) = MSFLandedCatch(Stk, Age, Fish, TStep) - (MSFNonRetention(Stk, Age, Fish, TStep) / MarkSelectiveMortRate(Fish, TStep))
+                                    MSFNonRetention(Stk, Age, Fish, TStep) = MSFEncounters(Stk, Age, Fish, TStep) * MarkSelectiveMarkMisID(Fish, TStep) * MarkSelectiveMortRate(Fish, TStep)
+                                    MSFLandedCatch(Stk, Age, Fish, TStep) = MSFEncounters(Stk, Age, Fish, TStep) - (MSFNonRetention(Stk, Age, Fish, TStep) / MarkSelectiveMortRate(Fish, TStep))
                                     'TotalNonRetention(Fish, TStep) +=  MSFNonRetention(Stk, Age, Fish, TStep)
                                 Else
                                     '--- UnMarked (Wild) in Selective Quota
-                                    MSFNonRetention(Stk, Age, Fish, TStep) = MSFLandedCatch(Stk, Age, Fish, TStep) * (1.0 - MarkSelectiveUnMarkMisID(Fish, TStep)) * MarkSelectiveMortRate(Fish, TStep)
-                                    MSFLandedCatch(Stk, Age, Fish, TStep) = MSFLandedCatch(Stk, Age, Fish, TStep) * MarkSelectiveUnMarkMisID(Fish, TStep)
+                                    MSFNonRetention(Stk, Age, Fish, TStep) = MSFEncounters(Stk, Age, Fish, TStep) * (1.0 - MarkSelectiveUnMarkMisID(Fish, TStep)) * MarkSelectiveMortRate(Fish, TStep)
+                                    MSFLandedCatch(Stk, Age, Fish, TStep) = MSFEncounters(Stk, Age, Fish, TStep) * MarkSelectiveUnMarkMisID(Fish, TStep)
                                     'TotalNonRetention(Fish, TStep) += MSFNonRetention(Stk, Age, Fish, TStep)
                                 End If
                                 If Double.IsNaN(MSFLandedCatch(Stk, Age, Fish, TStep)) Then
@@ -1263,12 +1267,12 @@ NextScalerFishery:
                                 End If
                                 '- Compute new Landed Catch and add back to Total
                                 LandedCatch(Stk, Age, Fish, TStep) = FisheryScaler(Fish, TStep) * LandedCatch(Stk, Age, Fish, TStep)
-                                Encounters(Stk, Age, Fish, TStep) += LandedCatch(Stk, Age, Fish, TStep)
+                                Encounters(Stk, Age, Fish, TStep) = LandedCatch(Stk, Age, Fish, TStep)
                                 TotalLandedCatch(Fish, TStep) += LandedCatch(Stk, Age, Fish, TStep)
                                 If (Stk Mod 2) <> 0 Then      '--- UnMarked Fish
                                     TotalLandedCatch(NumFish + Fish, TStep) += LandedCatch(Stk, Age, Fish, TStep)
                                 End If
-                                TotalEncounters(Fish, TStep) = TotalEncounters(Fish, TStep) + LandedCatch(Stk, Age, Fish, TStep)
+                                TotalEncounters(Fish, TStep) = TotalEncounters(Fish, TStep) + Encounters(Stk, Age, Fish, TStep)
                             Next Age
                         Next Stk
 
@@ -2084,6 +2088,8 @@ NextTolerCheck:
         '********************************************************************************************
         '- Compute Legal Size Proportion by Stock, Age, Maturity and Fishery (i.e. Size Limit)
         '********************************************************************************************
+        ' gets called for shaker and non-shaker, which are handled separately. Hence the large if/else later on. CBE
+
         Dim KTime, MeanSize, SizeStdDev As Double
 
         '--------- ALL 3 YR Old COHO considered legal ---
@@ -2139,7 +2145,7 @@ NextTolerCheck:
 
       'COMPUTE PROPORTION OF COHORT LARGER THAN SIZE LIMIT for Current Size Limit
         If ChinookBaseLegProp = False Then
-            If (MinSizeLimit(Fish, TStep) < MeanSize - 3 * SizeStdDev) Then
+            If (MinSizeLimit(Fish, TStep) < MeanSize - 3 * SizeStdDev) Then  'Feels like a weird way to round proportions <0.0013 down to 0. CBE
                 LegalProportion = 1
             End If
             If (MinSizeLimit(Fish, TStep) > MeanSize + 3 * SizeStdDev) Then
@@ -2623,13 +2629,16 @@ NextTolerCheck:
         End If
     End Sub
     Sub SizeLimitFixLanded(ByVal Fish As Integer, ByVal TerminalType As Integer)
+        ' Calculate landed catch using fixed method for shifts in legal size. Basic idea: calculate original legal catch, calculate original and new sublegal encounters,
+        ' and then substract the difference from the original landed catch for the NEW landed catch. Ensures total encounters don't change. CBE.
         Dim BaseLegalPop, BaseSubLegalPop, BaseShakers, BaseCatch, NewShakers As Double
         Dim BaseSubEncounters, NewSubEncounters, SubEncDiff As Double
         'Dim NSFQuotaTotal(NumFish, TStep), MSFQuotaTotal(NumFish, TStep) As Double
 
+
         For Stk As Integer = 1 To NumStk
             For Age As Integer = MinAge To MaxAge
-                If Fish = 22 And TStep = 2 And Stk = 47 And Age = 3 Then
+                If Fish = 22 And TStep = 2 And Stk = 47 And Age = 3 Then ' What does this even do? Isn't TStep already 2 by definition? CBE
                     TStep = 2
                 End If
 
@@ -2669,21 +2678,21 @@ NextTolerCheck:
                     End If
                 End If
 
-                BaseCatch = _
-                  Cohort(Stk, Age, TerminalType, TStep) * _
-                  BaseExploitationRate(Stk, Age, Fish, TStep) * _
-                  FisheryScaler(Fish, TStep) * _
-                  StockFishRateScalers(Stk, Fish, TStep) * _
+                BaseCatch =
+                  Cohort(Stk, Age, TerminalType, TStep) *
+                  BaseExploitationRate(Stk, Age, Fish, TStep) *
+                  FisheryScaler(Fish, TStep) *
+                  StockFishRateScalers(Stk, Fish, TStep) *
                   BaseLegalProportion
 
-                MSFBaseLegalEncounters = _
-                   Cohort(Stk, Age, TerminalType, TStep) * _
-                   BaseExploitationRate(Stk, Age, Fish, TStep) * _
-                   MSFFisheryScaler(Fish, TStep) * _
-                   StockFishRateScalers(Stk, Fish, TStep) * _
+                MSFBaseLegalEncounters =
+                   Cohort(Stk, Age, TerminalType, TStep) *
+                   BaseExploitationRate(Stk, Age, Fish, TStep) *
+                   MSFFisheryScaler(Fish, TStep) *
+                   StockFishRateScalers(Stk, Fish, TStep) *
                    BaseLegalProportion
 
-                
+
 
                 BaseSubLegalPop = Cohort(Stk, Age, TerminalType, TStep) * BaseSubLegalProportion
                 SubLegalPop = Cohort(Stk, Age, TerminalType, TStep) * SubLegalProportion
@@ -2732,13 +2741,13 @@ NextTolerCheck:
                 'TotalDropOff(Fish, TStep) = TotalDropOff(Fish, TStep) + MSFDropOff(Stk, Age, Fish, TStep)
                 MSFQuotaTotal(Fish, TStep) += MSFLandedCatch(Stk, Age, Fish, TStep)
                 NSFQuotaTotal(Fish, TStep) += LandedCatch(Stk, Age, Fish, TStep)
-                If (Stk Mod 2) <> 0 Then
+                If (Stk Mod 2) <> 0 Then ' Concern: are we adding in unmarked fish twice? But on a different fishery?? CBE
                     TotalLandedCatch(NumFish + Fish, TStep) = TotalLandedCatch(NumFish + Fish, TStep) + LandedCatch(Stk, Age, Fish, TStep) + MSFLandedCatch(Stk, Age, Fish, TStep)
                 End If
 
             Next Age
         Next Stk
-        
+
 
     End Sub
     Sub SizeLimitFixShaker(ByVal Fish, ByVal TerminalType, ByVal EncounterRate)
@@ -2763,7 +2772,8 @@ NextTolerCheck:
                 Call CompLegProp(Stk, Age, Fish, TerminalType)
 
                 LegalPopulation = LegalPopulation + Cohort(Stk, Age, TerminalType, TStep) * LegalProportion
-                LegalPop = Cohort(Stk, Age, TerminalType, TStep) * LegalProportion
+                LegalPop = Cohort(Stk, Age, TerminalType, TStep) * LegalProportion 'Doesn't look like this gets used for anything? If it's a global var that's problematic,
+                '       since it gets overwritten in each iteration. CBE
                 '- Zero Time 1 Yearling Shakers ...
                 '- Fish not Recruited Yet - Temp Fix 1/3/2000 JFP
                 If NumStk < 50 And Age = 2 And (TStep = 1 Or TStep = 4) And (Stk = 5 Or Stk = 6 Or Stk = 8 Or Stk = 14 Or Stk = 17 Or Stk = 25) Then
@@ -3111,7 +3121,7 @@ NextTolerCheck:
         '**************************************************************************
 
         For Fish As Integer = 1 To NumFish
-            If Fish = 20 Then
+            If Fish = 20 Then ' Isn't this purposeless? CBE
                 Fish = 20
             End If
             ReDim PropSubPop(NumStk, MaxAge)
@@ -3154,14 +3164,8 @@ SelctFsh:
 
       For Stk As Integer = 1 To NumStk
             For Age As Integer = MinAge To MaxAge
-                If Stk = 19 And Age = 3 And TStep = 3 Then
-                    Jim = 1
-                End If
 
                 For Fish As Integer = 1 To NumFish
-                    If Fish = 198 Then
-                        Jim = 1
-                    End If
                     If TerminalFisheryFlag(Fish, TStep) = PTerm Then
                         Cohort(Stk, Age, PTerm, TStep) = Cohort(Stk, Age, PTerm, TStep) - LandedCatch(Stk, Age, Fish, TStep) - Shakers(Stk, Age, Fish, TStep) - NonRetention(Stk, Age, Fish, TStep) - DropOff(Stk, Age, Fish, TStep) _
                                                                    - MSFLandedCatch(Stk, Age, Fish, TStep) - MSFShakers(Stk, Age, Fish, TStep) - MSFNonRetention(Stk, Age, Fish, TStep) - MSFDropOff(Stk, Age, Fish, TStep)
@@ -3200,7 +3204,7 @@ SelctFsh:
                     'MsgBox("ERROR - Negative Cohort Size for STOCK, AGE = " & StockName(Stk).ToString & " " & Age.ToString, MsgBoxStyle.OkOnly)
                 End If
             Next Age
-      Next Stk
+        Next Stk
 
         'COMPUTE MATURE COMPONENT OF EACH COHORT
       For Stk As Integer = 1 To NumStk

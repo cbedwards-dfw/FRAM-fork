@@ -119,7 +119,7 @@ Public Module FramVar
    Public MSFDropOff(,,,) As Double
    Public Encounters(,,,) As Double
    Public MSFEncounters(,,,) As Double
-   Public Cohort(,,,) As Double
+    Public Cohort(,,,) As Double ' stock, age, ??, timestep
     Public Escape(,,) As Double
     Public NSFQuotaTotal(,) As Double
     Public MSFQuotaTotal(,) As Double
