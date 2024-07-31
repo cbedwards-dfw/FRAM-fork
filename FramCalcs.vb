@@ -1119,7 +1119,7 @@ SkipTami2:
 
                                 TotalEncounters(Fish, TStep) += MSFEncounters(Stk, Age, Fish, TStep)
                                 '--- Use Selective Incidental Rate on ALL fish encountered
-                                MSFDropOff(Stk, Age, Fish, TStep) = MarkSelectiveIncRate(Fish, TStep) * (Stk, Age, Fish, TStep)
+                                MSFDropOff(Stk, Age, Fish, TStep) = MarkSelectiveIncRate(Fish, TStep) * MSFEncounters(Stk, Age, Fish, TStep)
                                 TotalDropOff(Fish, TStep) = TotalDropOff(Fish, TStep) + MSFDropOff(Stk, Age, Fish, TStep)
                                 '- All Stocks in Marked/UnMarked pairs
                                 If (Stk Mod 2) = 0 Then '--- Marked Fish in Selective

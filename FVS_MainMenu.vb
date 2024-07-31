@@ -9,8 +9,8 @@ Public Class FVS_MainMenu
 
    Private Sub FVS_MainMenu_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
       ReadOldCmd = False
-      FramVersionLabel.Text = "Version " & FramVersion
-      FormHeight = 762
+        FramVersionLabel.Text = "Version " & FramVersion & " -- Collin Fork"
+        FormHeight = 762
       FormWidth = 832
       If DevWidth > My.Computer.Screen.Bounds.Width Then
          FormWidthScaler = DevWidth / My.Computer.Screen.Bounds.Width

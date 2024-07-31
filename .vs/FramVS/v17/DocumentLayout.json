@@ -1,0 +1,137 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Repos\\FRAM-fork\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B19D91E4-7B4B-453E-9859-A5666F9038A3}|FramVS.vbproj|c:\\repos\\fram-fork\\fvs_backwardsfram.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{B19D91E4-7B4B-453E-9859-A5666F9038A3}|FramVS.vbproj|solutionrelative:fvs_backwardsfram.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B19D91E4-7B4B-453E-9859-A5666F9038A3}|FramVS.vbproj|c:\\repos\\fram-fork\\fvs_backwardstarget.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{B19D91E4-7B4B-453E-9859-A5666F9038A3}|FramVS.vbproj|solutionrelative:fvs_backwardstarget.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B19D91E4-7B4B-453E-9859-A5666F9038A3}|FramVS.vbproj|c:\\repos\\fram-fork\\framcalcs.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{B19D91E4-7B4B-453E-9859-A5666F9038A3}|FramVS.vbproj|solutionrelative:framcalcs.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B19D91E4-7B4B-453E-9859-A5666F9038A3}|FramVS.vbproj|c:\\repos\\fram-fork\\fvs_mainmenu.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{B19D91E4-7B4B-453E-9859-A5666F9038A3}|FramVS.vbproj|solutionrelative:fvs_mainmenu.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B19D91E4-7B4B-453E-9859-A5666F9038A3}|FramVS.vbproj|c:\\repos\\fram-fork\\framutils.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{B19D91E4-7B4B-453E-9859-A5666F9038A3}|FramVS.vbproj|solutionrelative:framutils.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B19D91E4-7B4B-453E-9859-A5666F9038A3}|FramVS.vbproj|c:\\repos\\fram-fork\\fvs_inputmenu.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form",
+      "RelativeMoniker": "D:0:0:{B19D91E4-7B4B-453E-9859-A5666F9038A3}|FramVS.vbproj|solutionrelative:fvs_inputmenu.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B19D91E4-7B4B-453E-9859-A5666F9038A3}|FramVS.vbproj|c:\\repos\\fram-fork\\fvs_backwardstarget.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form",
+      "RelativeMoniker": "D:0:0:{B19D91E4-7B4B-453E-9859-A5666F9038A3}|FramVS.vbproj|solutionrelative:fvs_backwardstarget.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "FramUtils.vb",
+              "DocumentMoniker": "C:\\Repos\\FRAM-fork\\FramUtils.vb",
+              "RelativeDocumentMoniker": "FramUtils.vb",
+              "ToolTip": "C:\\Repos\\FRAM-fork\\FramUtils.vb",
+              "RelativeToolTip": "FramUtils.vb",
+              "ViewState": "AQIAALoQAAAAAAAAAAAEwMcQAAAcAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-07-31T14:58:40.774Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FramCalcs.vb",
+              "DocumentMoniker": "C:\\Repos\\FRAM-fork\\FramCalcs.vb",
+              "RelativeDocumentMoniker": "FramCalcs.vb",
+              "ToolTip": "C:\\Repos\\FRAM-fork\\FramCalcs.vb",
+              "RelativeToolTip": "FramCalcs.vb",
+              "ViewState": "AQIAAFAEAAAAAAAAAAAEwGEEAABDAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-07-31T14:55:34.145Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FVS_MainMenu.vb",
+              "DocumentMoniker": "C:\\Repos\\FRAM-fork\\FVS_MainMenu.vb",
+              "RelativeDocumentMoniker": "FVS_MainMenu.vb",
+              "ToolTip": "C:\\Repos\\FRAM-fork\\FVS_MainMenu.vb",
+              "RelativeToolTip": "FVS_MainMenu.vb",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAYAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-07-31T14:54:16.135Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FVS_BackwardsFram.vb",
+              "DocumentMoniker": "C:\\Repos\\FRAM-fork\\FVS_BackwardsFram.vb",
+              "RelativeDocumentMoniker": "FVS_BackwardsFram.vb",
+              "ToolTip": "C:\\Repos\\FRAM-fork\\FVS_BackwardsFram.vb",
+              "RelativeToolTip": "FVS_BackwardsFram.vb",
+              "ViewState": "AQIAAP0DAAAAAAAAAAAqwBMEAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-07-31T14:39:26.653Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "FVS_BackwardsTarget.vb",
+              "DocumentMoniker": "C:\\Repos\\FRAM-fork\\FVS_BackwardsTarget.vb",
+              "RelativeDocumentMoniker": "FVS_BackwardsTarget.vb",
+              "ToolTip": "C:\\Repos\\FRAM-fork\\FVS_BackwardsTarget.vb",
+              "RelativeToolTip": "FVS_BackwardsTarget.vb",
+              "ViewState": "AQIAAFABAAAAAAAAAAAIwFsBAAAhAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-07-31T14:26:27.097Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "FVS_BackwardsTarget.vb [Design]",
+              "DocumentMoniker": "C:\\Repos\\FRAM-fork\\FVS_BackwardsTarget.vb",
+              "RelativeDocumentMoniker": "FVS_BackwardsTarget.vb",
+              "ToolTip": "C:\\Repos\\FRAM-fork\\FVS_BackwardsTarget.vb [Design]",
+              "RelativeToolTip": "FVS_BackwardsTarget.vb [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-07-31T14:26:31.043Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "FVS_InputMenu.vb [Design]",
+              "DocumentMoniker": "C:\\Repos\\FRAM-fork\\FVS_InputMenu.vb",
+              "RelativeDocumentMoniker": "FVS_InputMenu.vb",
+              "ToolTip": "C:\\Repos\\FRAM-fork\\FVS_InputMenu.vb [Design]",
+              "RelativeToolTip": "FVS_InputMenu.vb [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-07-31T14:11:53.055Z",
+              "EditorCaption": " [Design]"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

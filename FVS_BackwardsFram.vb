@@ -1,35 +1,36 @@
 Imports System.IO
 Imports System.IO.File
+Imports Microsoft.Office.Interop.Excel
 Public Class FVS_BackwardsFram
 
-   Public PrnLine As String
-   Public bfsw As StreamWriter
+    Public PrnLine As String
+    Public bfsw As StreamWriter
 
-   Private Sub FVS_BackwardsFram_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-      'Me.AutoScaleMode = Windows.Forms.AutoScaleMode.Dpi
-      IterProgressLabel.Visible = False
-      IterProgressTextBox.Visible = False
-      MSMRecsButton.Visible = False
-      MSMRecsButton.Enabled = False
-      SaveScalersButton.Visible = False
-      SaveScalersButton.Enabled = False
-      FormHeight = 724
-      FormWidth = 903
-      If FVSdatabasename.Length > 50 Then
-         DatabaseNameLabel.Text = FVSshortname
-      Else
-         DatabaseNameLabel.Text = FVSdatabasename
-      End If
-      RecordSetNameLabel.Text = RunIDNameSelect
-      '- Check if Form fits within Screen Dimensions
-      If (FormHeight > My.Computer.Screen.Bounds.Height Or _
+    Private Sub FVS_BackwardsFram_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        'Me.AutoScaleMode = Windows.Forms.AutoScaleMode.Dpi
+        IterProgressLabel.Visible = False
+        IterProgressTextBox.Visible = False
+        MSMRecsButton.Visible = False
+        MSMRecsButton.Enabled = False
+        SaveScalersButton.Visible = False
+        SaveScalersButton.Enabled = False
+        FormHeight = 724
+        FormWidth = 903
+        If FVSdatabasename.Length > 50 Then
+            DatabaseNameLabel.Text = FVSshortname
+        Else
+            DatabaseNameLabel.Text = FVSdatabasename
+        End If
+        RecordSetNameLabel.Text = RunIDNameSelect
+        '- Check if Form fits within Screen Dimensions
+        If (FormHeight > My.Computer.Screen.Bounds.Height Or
           FormWidth > My.Computer.Screen.Bounds.Width) Then
-         Me.Height = FormHeight / (DevHeight / My.Computer.Screen.Bounds.Height)
-         Me.Width = FormWidth / (DevWidth / My.Computer.Screen.Bounds.Width)
-         If FVS_MainMenu_ReSize = False Then
-            Resize_Form(Me)
-            FVS_MainMenu_ReSize = True
-         End If
+            Me.Height = FormHeight / (DevHeight / My.Computer.Screen.Bounds.Height)
+            Me.Width = FormWidth / (DevWidth / My.Computer.Screen.Bounds.Width)
+            If FVS_MainMenu_ReSize = False Then
+                Resize_Form(Me)
+                FVS_MainMenu_ReSize = True
+            End If
         End If
         If SpeciesName = "CHINOOK" Then
             NoMSFBiasCorrection.Visible = False
@@ -39,28 +40,28 @@ Public Class FVS_BackwardsFram
         Else
             chk2from3.Visible = True
         End If
-   End Sub
+    End Sub
 
-   Private Sub TargetEscButton_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles TargetEscButton.Click
-      Me.Visible = False
-      FVS_BackwardsTarget.ShowDialog()
-      Me.BringToFront()
-   End Sub
+    Private Sub TargetEscButton_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles TargetEscButton.Click
+        Me.Visible = False
+        FVS_BackwardsTarget.ShowDialog()
+        Me.BringToFront()
+    End Sub
 
-   Private Sub StartIterationsButton_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles StartIterationsButton.Click
+    Private Sub StartIterationsButton_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles StartIterationsButton.Click
         Dim NumBackFRAMIterations As Integer
 
-      If Not IsNumeric(NumBackFRAMIterationsTextBox.Text) Then
-         MsgBox("Number of Iterations must be Numeric!!", MsgBoxStyle.OkOnly)
-         Exit Sub
-      End If
-      NumBackFRAMIterations = CInt(NumBackFRAMIterationsTextBox.Text)
+        If Not IsNumeric(NumBackFRAMIterationsTextBox.Text) Then
+            MsgBox("Number of Iterations must be Numeric!!", MsgBoxStyle.OkOnly)
+            Exit Sub
+        End If
+        NumBackFRAMIterations = CInt(NumBackFRAMIterationsTextBox.Text)
 
-      '- CHINOOK is done separately with Terminal Runs as Targets 
-      If SpeciesName = "CHINOOK" Then
-         Call BackChinookFram(BackFRAMIteration, NumBackFRAMIterations)
-         Exit Sub
-      End If
+        '- CHINOOK is done separately with Terminal Runs as Targets 
+        If SpeciesName = "CHINOOK" Then
+            Call BackChinookFram(BackFRAMIteration, NumBackFRAMIterations)
+            Exit Sub
+        End If
 
         If NoMSFBiasCorrection.Checked = True Then
             MSFBiasFlag = False
@@ -70,9 +71,9 @@ Public Class FVS_BackwardsFram
             SaveInitialFlag = True
         End If
 
-      ReDim BackScaler(NumStk, NumBackFRAMIterations)
+        ReDim BackScaler(NumStk, NumBackFRAMIterations)
         ReDim BackEsc(NumStk, NumBackFRAMIterations)
-       
+
         If SpeciesName = "COHO" Then
             ReDim InitialCohort(NumStk + 1)
 
@@ -176,7 +177,7 @@ Public Class FVS_BackwardsFram
         DoneIterating = 1
         FirstIter = 1
         For BackFRAMIteration = 1 To NumBackFRAMIterations
-            
+
             If DoneIterating < 0 Then
                 ChangeStockRecruit = True
                 Exit For
@@ -235,18 +236,18 @@ Public Class FVS_BackwardsFram
         Me.BringToFront()
         Exit Sub
 
-   End Sub
+    End Sub
 
-   Sub Check_BackwardsTarget(ByVal IterNum As Integer, ByVal BackFRAMIteration As Integer)
+    Sub Check_BackwardsTarget(ByVal IterNum As Integer, ByVal BackFRAMIteration As Integer)
 
         Dim EscDiff, ERTotal, StockMort(,) As Double
         Dim timestep As Integer
-      
-      '- Compare FRAM Escapements to Target Escapements
-      '  Recalculate Stock Scalars for Next Iteration
-      '  Exit if Convergence Criteria is met ... do this later
 
-      Age = 3
+        '- Compare FRAM Escapements to Target Escapements
+        '  Recalculate Stock Scalars for Next Iteration
+        '  Exit if Convergence Criteria is met ... do this later
+
+        Age = 3
         TStep = 5
         DoneIterating = 0
         'calulate stock mortalities summed over all fisheries within a time step to expand target escapements
@@ -254,8 +255,8 @@ Public Class FVS_BackwardsFram
         For Stk = 1 To NumStk
             For Fish = 1 To NumFish
                 For timestep = 1 To NumSteps
-                    StockMort(Stk, timestep) += LandedCatch(Stk, 3, Fish, timestep) + MSFLandedCatch(Stk, 3, Fish, timestep) + _
-                    NonRetention(Stk, 3, Fish, timestep) + MSFNonRetention(Stk, 3, Fish, timestep) + _
+                    StockMort(Stk, timestep) += LandedCatch(Stk, 3, Fish, timestep) + MSFLandedCatch(Stk, 3, Fish, timestep) +
+                    NonRetention(Stk, 3, Fish, timestep) + MSFNonRetention(Stk, 3, Fish, timestep) +
                     DropOff(Stk, 3, Fish, timestep) + MSFDropOff(Stk, 3, Fish, timestep)
                 Next
             Next
@@ -295,9 +296,9 @@ Public Class FVS_BackwardsFram
             'If StockRecruit(Stk, Age, 1) <> 0 And BackwardsTarget(Stk) <> 0 And BackwardsFlag(Stk) = 1 Then
             If StockRecruit(Stk, Age, 1) <> 0 And BackwardsFlag(Stk) = 1 Then
 
-                StockRecruit(Stk, Age, 1) = ((((((BackwardsTarget(Stk) + StockMort(Stk, 5)) / (1 - NaturalMortality(3, 5)) + _
-                                            StockMort(Stk, 4)) / (1 - NaturalMortality(3, 4)) + StockMort(Stk, 3)) / _
-                                            (1 - NaturalMortality(3, 3)) + StockMort(Stk, 2)) / (1 - NaturalMortality(3, 2)) + _
+                StockRecruit(Stk, Age, 1) = ((((((BackwardsTarget(Stk) + StockMort(Stk, 5)) / (1 - NaturalMortality(3, 5)) +
+                                            StockMort(Stk, 4)) / (1 - NaturalMortality(3, 4)) + StockMort(Stk, 3)) /
+                                            (1 - NaturalMortality(3, 3)) + StockMort(Stk, 2)) / (1 - NaturalMortality(3, 2)) +
                                             StockMort(Stk, 1)) / (1 - NaturalMortality(3, 1))) / BaseCohortSize(Stk, Age)
                 If Double.IsNaN(StockRecruit(Stk, Age, 1)) Then
                     MsgBox("Invalid Cohort Size for Stk " & Stk & ", PTerm " & PTerm & ", Time Step " & TStep & ".")
@@ -327,18 +328,18 @@ Public Class FVS_BackwardsFram
                     '    EscDiff = BackwardsTarget(Stk) * Escape(Stk, Age, TStep) / (Escape(Stk, Age, TStep) + Escape(Stk + 1, Age, TStep)) - Escape(Stk, Age, TStep)
                     'Else
                     '- Normal Scaling
-                    StockRecruit(Stk, Age, 1) = ((((((RunBackwardsTarget(Stk) * 2 + StockMort(Stk, 5) + StockMort(Stk + 1, 5)) / (1 - NaturalMortality(3, 5)) + _
-                                                StockMort(Stk, 4) + StockMort(Stk + 1, 4)) / (1 - NaturalMortality(3, 4)) + _
-                                                StockMort(Stk, 3) + StockMort(Stk + 1, 3)) / _
-                                                (1 - NaturalMortality(3, 3)) + StockMort(Stk, 2) + StockMort(Stk + 1, 2)) / _
-                                                (1 - NaturalMortality(3, 2)) + StockMort(Stk, 1) + StockMort(Stk + 1, 1)) / _
+                    StockRecruit(Stk, Age, 1) = ((((((RunBackwardsTarget(Stk) * 2 + StockMort(Stk, 5) + StockMort(Stk + 1, 5)) / (1 - NaturalMortality(3, 5)) +
+                                                StockMort(Stk, 4) + StockMort(Stk + 1, 4)) / (1 - NaturalMortality(3, 4)) +
+                                                StockMort(Stk, 3) + StockMort(Stk + 1, 3)) /
+                                                (1 - NaturalMortality(3, 3)) + StockMort(Stk, 2) + StockMort(Stk + 1, 2)) /
+                                                (1 - NaturalMortality(3, 2)) + StockMort(Stk, 1) + StockMort(Stk + 1, 1)) /
                                                 (1 - NaturalMortality(3, 1)) * InitialCohort(Stk) / (InitialCohort(Stk) + InitialCohort(Stk + 1))) _
                                                 / BaseCohortSize(Stk, Age)
-                    StockRecruit(Stk + 1, Age, 1) = ((((((RunBackwardsTarget(Stk + 1) * 2 + StockMort(Stk, 5) + StockMort(Stk + 1, 5)) / (1 - NaturalMortality(3, 5)) + _
-                                               StockMort(Stk, 4) + StockMort(Stk + 1, 4)) / (1 - NaturalMortality(3, 4)) + _
-                                               StockMort(Stk, 3) + StockMort(Stk + 1, 3)) / _
-                                               (1 - NaturalMortality(3, 3)) + StockMort(Stk, 2) + StockMort(Stk + 1, 2)) / _
-                                               (1 - NaturalMortality(3, 2)) + StockMort(Stk, 1) + StockMort(Stk + 1, 1)) / _
+                    StockRecruit(Stk + 1, Age, 1) = ((((((RunBackwardsTarget(Stk + 1) * 2 + StockMort(Stk, 5) + StockMort(Stk + 1, 5)) / (1 - NaturalMortality(3, 5)) +
+                                               StockMort(Stk, 4) + StockMort(Stk + 1, 4)) / (1 - NaturalMortality(3, 4)) +
+                                               StockMort(Stk, 3) + StockMort(Stk + 1, 3)) /
+                                               (1 - NaturalMortality(3, 3)) + StockMort(Stk, 2) + StockMort(Stk + 1, 2)) /
+                                               (1 - NaturalMortality(3, 2)) + StockMort(Stk, 1) + StockMort(Stk + 1, 1)) /
                                                (1 - NaturalMortality(3, 1)) * InitialCohort(Stk + 1) / (InitialCohort(Stk) + InitialCohort(Stk + 1))) _
                                                / BaseCohortSize(Stk + 1, Age)
 
@@ -683,7 +684,7 @@ NextStockRecruitr:
             End If
         Next
 
-       
+
         '*****Angelika calculated method to quickly bring terminal run sizes in line with target for most stocks; addresses maturation in other
         'time steps and problems with large intercepts, but will have residuals for most stocks
         For TRun = 1 To NumStk + NumChinTermRuns
@@ -719,15 +720,15 @@ NextStockRecruitr:
 
 
 
-                        StockRecruit(Stk, Age, 1) = ((BackwardsChinook(TRun, Age) + ((AgeTSCatch(Stk, Age, 1)) * MaturationRate(Stk, Age, 1) + ((AgeTSCatch(Stk, Age, 1)) * _
-                                                    (1 - MaturationRate(Stk, Age, 1)) * (1 - NaturalMortality(Age, 2)) + (AgeTSCatch(Stk, Age, 2))) * _
-                                                    MaturationRate(Stk, Age, 2) + (((AgeTSCatch(Stk, Age, 1)) * (1 - MaturationRate(Stk, Age, 1)) * _
-                                                    (1 - NaturalMortality(Age, 2)) + (AgeTSCatch(Stk, Age, 2))) * (1 - MaturationRate(Stk, Age, 2)) * _
-                                                    (1 - NaturalMortality(Age, 3)) + (AgeTSCatch(Stk, Age, 3))) * MaturationRate(Stk, Age, 3))) + AgeTSCatchTerm(Stk, Age, 1) + AgeTSCatchTerm(Stk, Age, 2) + AgeTSCatchTerm(Stk, Age, 3)) / _
-                                                    ((1 - NaturalMortality(Age, 1)) * MaturationRate(Stk, Age, 1) + (1 - NaturalMortality(Age, 1)) * _
-                                                    (1 - MaturationRate(Stk, Age, 1)) * (1 - NaturalMortality(Age, 2)) * MaturationRate(Stk, Age, 2) + _
-                                                    (1 - NaturalMortality(Age, 1)) * (1 - MaturationRate(Stk, Age, 1)) * (1 - NaturalMortality(Age, 2)) * _
-                                                    (1 - MaturationRate(Stk, Age, 2)) * (1 - NaturalMortality(Age, 3)) * MaturationRate(Stk, Age, 3)) / _
+                        StockRecruit(Stk, Age, 1) = ((BackwardsChinook(TRun, Age) + ((AgeTSCatch(Stk, Age, 1)) * MaturationRate(Stk, Age, 1) + ((AgeTSCatch(Stk, Age, 1)) *
+                                                    (1 - MaturationRate(Stk, Age, 1)) * (1 - NaturalMortality(Age, 2)) + (AgeTSCatch(Stk, Age, 2))) *
+                                                    MaturationRate(Stk, Age, 2) + (((AgeTSCatch(Stk, Age, 1)) * (1 - MaturationRate(Stk, Age, 1)) *
+                                                    (1 - NaturalMortality(Age, 2)) + (AgeTSCatch(Stk, Age, 2))) * (1 - MaturationRate(Stk, Age, 2)) *
+                                                    (1 - NaturalMortality(Age, 3)) + (AgeTSCatch(Stk, Age, 3))) * MaturationRate(Stk, Age, 3))) + AgeTSCatchTerm(Stk, Age, 1) + AgeTSCatchTerm(Stk, Age, 2) + AgeTSCatchTerm(Stk, Age, 3)) /
+                                                    ((1 - NaturalMortality(Age, 1)) * MaturationRate(Stk, Age, 1) + (1 - NaturalMortality(Age, 1)) *
+                                                    (1 - MaturationRate(Stk, Age, 1)) * (1 - NaturalMortality(Age, 2)) * MaturationRate(Stk, Age, 2) +
+                                                    (1 - NaturalMortality(Age, 1)) * (1 - MaturationRate(Stk, Age, 1)) * (1 - NaturalMortality(Age, 2)) *
+                                                    (1 - MaturationRate(Stk, Age, 2)) * (1 - NaturalMortality(Age, 3)) * MaturationRate(Stk, Age, 3)) /
                                                     BaseCohortSize(Stk, Age)
 
 
@@ -791,15 +792,15 @@ NextStockRecruitr:
                         ERBKMethod(Stk, Age, 1) = SumTSCatch(Stk, Age) / (SumTSCatch(Stk, Age) + TermChinRun(TRun, Age))
 
 
-                        StockRecruit(Stk, Age, 1) = ((BackwardsChinook(TRun, Age) + (AgeTSCatch(Stk, Age, 1) * MaturationRate(Stk, Age, 1) + (AgeTSCatch(Stk, Age, 1) * _
-                                                    (1 - MaturationRate(Stk, Age, 1)) * (1 - NaturalMortality(Age, 2)) + AgeTSCatch(Stk, Age, 2)) * _
-                                                    MaturationRate(Stk, Age, 2) + ((AgeTSCatch(Stk, Age, 1) * (1 - MaturationRate(Stk, Age, 1)) * _
-                                                    (1 - NaturalMortality(Age, 2)) + AgeTSCatch(Stk, Age, 2)) * (1 - MaturationRate(Stk, Age, 2)) * _
-                                                    (1 - NaturalMortality(Age, 3)) + AgeTSCatch(Stk, Age, 3)) * MaturationRate(Stk, Age, 3))) + AgeTSCatchTerm(Stk, Age, 1) + AgeTSCatchTerm(Stk, Age, 2) + AgeTSCatchTerm(Stk, Age, 3)) / _
-                                                    ((1 - NaturalMortality(Age, 1)) * MaturationRate(Stk, Age, 1) + (1 - NaturalMortality(Age, 1)) * _
-                                                    (1 - MaturationRate(Stk, Age, 1)) * (1 - NaturalMortality(Age, 2)) * MaturationRate(Stk, Age, 2) + _
-                                                    (1 - NaturalMortality(Age, 1)) * (1 - MaturationRate(Stk, Age, 1)) * (1 - NaturalMortality(Age, 2)) * _
-                                                    (1 - MaturationRate(Stk, Age, 2)) * (1 - NaturalMortality(Age, 3)) * MaturationRate(Stk, Age, 3)) / _
+                        StockRecruit(Stk, Age, 1) = ((BackwardsChinook(TRun, Age) + (AgeTSCatch(Stk, Age, 1) * MaturationRate(Stk, Age, 1) + (AgeTSCatch(Stk, Age, 1) *
+                                                    (1 - MaturationRate(Stk, Age, 1)) * (1 - NaturalMortality(Age, 2)) + AgeTSCatch(Stk, Age, 2)) *
+                                                    MaturationRate(Stk, Age, 2) + ((AgeTSCatch(Stk, Age, 1) * (1 - MaturationRate(Stk, Age, 1)) *
+                                                    (1 - NaturalMortality(Age, 2)) + AgeTSCatch(Stk, Age, 2)) * (1 - MaturationRate(Stk, Age, 2)) *
+                                                    (1 - NaturalMortality(Age, 3)) + AgeTSCatch(Stk, Age, 3)) * MaturationRate(Stk, Age, 3))) + AgeTSCatchTerm(Stk, Age, 1) + AgeTSCatchTerm(Stk, Age, 2) + AgeTSCatchTerm(Stk, Age, 3)) /
+                                                    ((1 - NaturalMortality(Age, 1)) * MaturationRate(Stk, Age, 1) + (1 - NaturalMortality(Age, 1)) *
+                                                    (1 - MaturationRate(Stk, Age, 1)) * (1 - NaturalMortality(Age, 2)) * MaturationRate(Stk, Age, 2) +
+                                                    (1 - NaturalMortality(Age, 1)) * (1 - MaturationRate(Stk, Age, 1)) * (1 - NaturalMortality(Age, 2)) *
+                                                    (1 - MaturationRate(Stk, Age, 2)) * (1 - NaturalMortality(Age, 3)) * MaturationRate(Stk, Age, 3)) /
                                                     BaseCohortSize(Stk, Age)
                         BackChinScaler(TRun, Age, IterNum) = StockRecruit(Stk, Age, 1)
 
@@ -812,7 +813,7 @@ NextStockRecruitr:
             End If
         Next TRun
         BkMethod = 1
-        
+
 
         For TRun = 1 To NumStk + NumChinTermRuns
             Stk = TermStockNum(TRun)
@@ -956,7 +957,7 @@ NextTRun:
                                 Jim = 1
                             End If
                             Select Case Fish
-                                Case TFish(TSum, 2), TFish(TSum, 3), TFish(TSum, 4), TFish(TSum, 5), TFish(TSum, 6), TFish(TSum, 7), _
+                                Case TFish(TSum, 2), TFish(TSum, 3), TFish(TSum, 4), TFish(TSum, 5), TFish(TSum, 6), TFish(TSum, 7),
                                     TFish(TSum, 8), TFish(TSum, 9), TFish(TSum, 10)
                                     Select Case TStep
                                         Case TTime(TSum, 1), TTime(TSum, 2)
@@ -1010,7 +1011,7 @@ NextTRun:
                             Jim = 1
                         End If
                         Select Case Fish
-                            Case TFish(TSum, 2), TFish(TSum, 3), TFish(TSum, 4), TFish(TSum, 5), TFish(TSum, 6), TFish(TSum, 7), _
+                            Case TFish(TSum, 2), TFish(TSum, 3), TFish(TSum, 4), TFish(TSum, 5), TFish(TSum, 6), TFish(TSum, 7),
                                 TFish(TSum, 8), TFish(TSum, 9), TFish(TSum, 10)
                                 Select Case TStep
                                     Case TTime(TSum, 1), TTime(TSum, 2)
@@ -1036,10 +1037,10 @@ NextTRun:
                         End Select
                     Next Fish
                 Next TStep
-                
+
             Next Age
 
-      End If
+        End If
         'Jim = 2
         'If TermChinRun(TermRun, Age) < 0 Then
         '    Dim What As Integer
@@ -1163,6 +1164,8 @@ NextTRun:
                     End Select
                 Next n
         End Select
+
+
 
         '--- TermRunStock used for Backwards CHINOOK FRAM
         '--- Used to Index Stock to Terminal Run
@@ -1422,11 +1425,7 @@ NextTRun:
                         Case 75, 76
                             TermRunStock(Stk) = 19
                         Case Is > 76
-                            If Stk Mod 2 = 0 Then
-                                TermRunStock(Stk) = Stk / 2 - 0.5
-                            Else
-                                TermRunStock(Stk) = Stk / 2 - 1
-                            End If
+                            TermRunStock(Stk) = Math.Ceiling(Stk / 2) - 1 'treating marked and unmarked the same, indexing starts at 0.
                     End Select
             End Select
         Next Stk
@@ -1434,7 +1433,7 @@ NextTRun:
 
         '--- TermStockNum for Backwards CHINOOK FRAM
         '--- Used to Index Stocks with defined Terminal Runs
-        Select Case NumStk
+        Select Case NumStk 'all cases but >76 are here for backwards compatibility.
             Case 33
                 ReDim TermStockNum(NumStk + 32)
                 TermStockNum(1) = -1
@@ -1794,8 +1793,9 @@ NextTRun:
                 TermStockNum(111) = -37
                 TermStockNum(112) = 73
                 TermStockNum(113) = 74
-            Case Is > 76
+            Case Is > 76 'Refactored for adaptability.
                 ReDim TermStockNum(NumStk + NumStk / 2 - 1)
+                'The first few are going to be manual, as TermStockNum 5-8 don't follow the regular pattern that starts after that point.
                 TermStockNum(1) = -1
                 TermStockNum(2) = 1
                 TermStockNum(3) = 2
@@ -1804,114 +1804,146 @@ NextTRun:
                 TermStockNum(6) = 4
                 TermStockNum(7) = 5
                 TermStockNum(8) = 6
-                TermStockNum(9) = -3
-                TermStockNum(10) = 7
-                TermStockNum(11) = 8
-                TermStockNum(12) = -4
-                TermStockNum(13) = 9
-                TermStockNum(14) = 10
-                TermStockNum(15) = -5
-                TermStockNum(16) = 11
-                TermStockNum(17) = 12
-                TermStockNum(18) = -6
-                TermStockNum(19) = 13
-                TermStockNum(20) = 14
-                TermStockNum(21) = -7
-                TermStockNum(22) = 15
-                TermStockNum(23) = 16
-                TermStockNum(24) = -8
-                TermStockNum(25) = 17
-                TermStockNum(26) = 18
-                TermStockNum(27) = -9
-                TermStockNum(28) = 19
-                TermStockNum(29) = 20
-                TermStockNum(30) = -10
-                TermStockNum(31) = 21
-                TermStockNum(32) = 22
-                TermStockNum(33) = -11
-                TermStockNum(34) = 23
-                TermStockNum(35) = 24
-                TermStockNum(36) = -12
-                TermStockNum(37) = 25
-                TermStockNum(38) = 26
-                TermStockNum(39) = -13
-                TermStockNum(40) = 27
-                TermStockNum(41) = 28
-                TermStockNum(42) = -14
-                TermStockNum(43) = 29
-                TermStockNum(44) = 30
-                TermStockNum(45) = -15
-                TermStockNum(46) = 31
-                TermStockNum(47) = 32
-                TermStockNum(48) = -16
-                TermStockNum(49) = 33
-                TermStockNum(50) = 34
-                TermStockNum(51) = -17
-                TermStockNum(52) = 35
-                TermStockNum(53) = 36
-                TermStockNum(54) = -18
-                TermStockNum(55) = 65
-                TermStockNum(56) = 66
-                TermStockNum(57) = -19
-                TermStockNum(58) = 75
-                TermStockNum(59) = 76
-                TermStockNum(60) = -20
-                TermStockNum(61) = 37
-                TermStockNum(62) = 38
-                TermStockNum(63) = -21
-                TermStockNum(64) = 39
-                TermStockNum(65) = 40
-                TermStockNum(66) = -22
-                TermStockNum(67) = 41
-                TermStockNum(68) = 42
-                TermStockNum(69) = -23
-                TermStockNum(70) = 43
-                TermStockNum(71) = 44
-                TermStockNum(72) = -24
-                TermStockNum(73) = 45
-                TermStockNum(74) = 46
-                TermStockNum(75) = -25
-                TermStockNum(76) = 47
-                TermStockNum(77) = 48
-                TermStockNum(78) = -26
-                TermStockNum(79) = 49
-                TermStockNum(80) = 50
-                TermStockNum(81) = -27
-                TermStockNum(82) = 51
-                TermStockNum(83) = 52
-                TermStockNum(84) = -28
-                TermStockNum(85) = 53
-                TermStockNum(86) = 54
-                TermStockNum(87) = -29
-                TermStockNum(88) = 55
-                TermStockNum(89) = 56
-                TermStockNum(90) = -30
-                TermStockNum(91) = 57
-                TermStockNum(92) = 58
-                TermStockNum(93) = -31
-                TermStockNum(94) = 59
-                TermStockNum(95) = 60
-                TermStockNum(96) = -32
-                TermStockNum(97) = 61
-                TermStockNum(98) = 62
-                TermStockNum(99) = -33
-                TermStockNum(100) = 63
-                TermStockNum(101) = 64
-                TermStockNum(102) = -34
-                TermStockNum(103) = 67
-                TermStockNum(104) = 68
-                TermStockNum(105) = -35
-                TermStockNum(106) = 69
-                TermStockNum(107) = 70
-                TermStockNum(108) = -36
-                TermStockNum(109) = 71
-                TermStockNum(110) = 72
-                TermStockNum(111) = -37
-                TermStockNum(112) = 73
-                TermStockNum(113) = 74
-                TermStockNum(114) = -38
-                TermStockNum(115) = 77
-                TermStockNum(116) = 78
+                'looping over the rest, as there is a repeating pattern.
+                'if n is divisible by 3, TermStockNum is -n/3
+                'otherwise, we increment up, with n TermStockNum(10) = 7, and 
+                ' increasing by 1 for every n not divisible by 3.
+                ' We're already in a loop, so we can handle that with a value tracker.
+                ' Note that in a vectorized context (e.g. if this gets translated to R), we get the same values with
+                ' (n-3) - floor( (n-9) / 3 )
+                Dim PosValueTracker As Integer
+                PosValueTracker = 7
+                For n As Integer = 9 To (NumStk + NumStk / 2 - 1)
+                    If (n Mod 3) = 0 Then
+                        TermStockNum(n) = -1 * n / 3
+                    Else
+                        TermStockNum(n) = PosValueTracker
+                        PosValueTracker = PosValueTracker + 1
+                    End If
+                Next n
+                'Case Is > 76 ' Old method that seemed unnecessarily clunky. Collin has replaced this iwth the adaptive code above.
+                '    ReDim TermStockNum(NumStk + NumStk / 2 - 1)
+                '    TermStockNum(1) = -1
+                '    TermStockNum(2) = 1
+                '    TermStockNum(3) = 2
+                '    TermStockNum(4) = -2
+                '    TermStockNum(5) = 3
+                '    TermStockNum(6) = 4
+                '    TermStockNum(7) = 5
+                '    TermStockNum(8) = 6
+                '    TermStockNum(9) = -3
+                '    TermStockNum(10) = 7
+                '    TermStockNum(11) = 8
+                '    TermStockNum(12) = -4
+                '    TermStockNum(13) = 9
+                '    TermStockNum(14) = 10
+                '    TermStockNum(15) = -5
+                '    TermStockNum(16) = 11
+                '    TermStockNum(17) = 12
+                '    TermStockNum(18) = -6
+                '    TermStockNum(19) = 13
+                '    TermStockNum(20) = 14
+                '    TermStockNum(21) = -7
+                '    TermStockNum(22) = 15
+                '    TermStockNum(23) = 16
+                '    TermStockNum(24) = -8
+                '    TermStockNum(25) = 17
+                '    TermStockNum(26) = 18
+                '    TermStockNum(27) = -9
+                '    TermStockNum(28) = 19
+                '    TermStockNum(29) = 20
+                '    TermStockNum(30) = -10
+                '    TermStockNum(31) = 21
+                '    TermStockNum(32) = 22
+                '    TermStockNum(33) = -11
+                '    TermStockNum(34) = 23
+                '    TermStockNum(35) = 24
+                '    TermStockNum(36) = -12
+                '    TermStockNum(37) = 25
+                '    TermStockNum(38) = 26
+                '    TermStockNum(39) = -13
+                '    TermStockNum(40) = 27
+                '    TermStockNum(41) = 28
+                '    TermStockNum(42) = -14
+                '    TermStockNum(43) = 29
+                '    TermStockNum(44) = 30
+                '    TermStockNum(45) = -15
+                '    TermStockNum(46) = 31
+                '    TermStockNum(47) = 32
+                '    TermStockNum(48) = -16
+                '    TermStockNum(49) = 33
+                '    TermStockNum(50) = 34
+                '    TermStockNum(51) = -17
+                '    TermStockNum(52) = 35
+                '    TermStockNum(53) = 36
+                '    TermStockNum(54) = -18
+                '    TermStockNum(55) = 65
+                '    TermStockNum(56) = 66
+                '    TermStockNum(57) = -19
+                '    TermStockNum(58) = 75
+                '    TermStockNum(59) = 76
+                '    TermStockNum(60) = -20
+                '    TermStockNum(61) = 37
+                '    TermStockNum(62) = 38
+                '    TermStockNum(63) = -21
+                '    TermStockNum(64) = 39
+                '    TermStockNum(65) = 40
+                '    TermStockNum(66) = -22
+                '    TermStockNum(67) = 41
+                '    TermStockNum(68) = 42
+                '    TermStockNum(69) = -23
+                '    TermStockNum(70) = 43
+                '    TermStockNum(71) = 44
+                '    TermStockNum(72) = -24
+                '    TermStockNum(73) = 45
+                '    TermStockNum(74) = 46
+                '    TermStockNum(75) = -25
+                '    TermStockNum(76) = 47
+                '    TermStockNum(77) = 48
+                '    TermStockNum(78) = -26
+                '    TermStockNum(79) = 49
+                '    TermStockNum(80) = 50
+                '    TermStockNum(81) = -27
+                '    TermStockNum(82) = 51
+                '    TermStockNum(83) = 52
+                '    TermStockNum(84) = -28
+                '    TermStockNum(85) = 53
+                '    TermStockNum(86) = 54
+                '    TermStockNum(87) = -29
+                '    TermStockNum(88) = 55
+                '    TermStockNum(89) = 56
+                '    TermStockNum(90) = -30
+                '    TermStockNum(91) = 57
+                '    TermStockNum(92) = 58
+                '    TermStockNum(93) = -31
+                '    TermStockNum(94) = 59
+                '    TermStockNum(95) = 60
+                '    TermStockNum(96) = -32
+                '    TermStockNum(97) = 61
+                '    TermStockNum(98) = 62
+                '    TermStockNum(99) = -33
+                '    TermStockNum(100) = 63
+                '    TermStockNum(101) = 64
+                '    TermStockNum(102) = -34
+                '    TermStockNum(103) = 67
+                '    TermStockNum(104) = 68
+                '    TermStockNum(105) = -35
+                '    TermStockNum(106) = 69
+                '    TermStockNum(107) = 70
+                '    TermStockNum(108) = -36
+                '    TermStockNum(109) = 71
+                '    TermStockNum(110) = 72
+                '    TermStockNum(111) = -37
+                '    TermStockNum(112) = 73
+                '    TermStockNum(113) = 74
+                '    TermStockNum(114) = -38
+                '    TermStockNum(115) = 77
+                '    TermStockNum(116) = 78
+                '    ' What the fuck is this? Going to try repeating this pattern, see if that changes our error.
+                '    TermStockNum(117) = -39
+                '    TermStockNum(118) = 79
+                '    TermStockNum(119) = 80
+
         End Select
 
         '- TFish is Array of Terminal Fisheries for each Terminal Run
